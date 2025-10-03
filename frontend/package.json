@@ -1,0 +1,38 @@
+{
+  "name": "jewellery-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for jewellery app",
+  "scripts": {
+    "start": "react-scripts start",
+    "dev": "node ../scripts/load-env.js react frontend && react-scripts start",
+    "build": "node ../scripts/load-env.js react frontend && react-scripts build",
+    "test": "node ../scripts/load-env.js react frontend && react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.0",
+    "@heroicons/react": "^2.2.0",
+    "autoprefixer": "^10.4.21",
+    "axios": "^1.12.2",
+    "postcss": "^8.5.6",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^18.2.0",
+    "react-router-bootstrap": "^0.26.3",
+    "react-router-dom": "^6.30.1",
+    "react-scripts": "^5.0.1",
+    "tailwindcss": "^3.4.17"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
