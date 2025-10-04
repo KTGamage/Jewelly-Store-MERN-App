@@ -86,6 +86,28 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get category counts - simpler version
+router.get('/category-counts', async (req, res) => {
+  try {
+    const ringsCount = await Product.countDocuments({ category: 'rings' });
+    const necklacesCount = await Product.countDocuments({ category: 'necklaces' });
+    const earringsCount = await Product.countDocuments({ category: 'earrings' });
+    const braceletsCount = await Product.countDocuments({ category: 'bracelets' });
+    const otherCount = await Product.countDocuments({ category: 'other' });
+
+    res.json({
+      rings: ringsCount,
+      necklaces: necklacesCount,
+      earrings: earringsCount,
+      bracelets: braceletsCount,
+      other: otherCount
+    });
+  } catch (error) {
+    console.error('Error fetching category counts:', error);
+    res.status(500).json({ error: 'Failed to fetch category counts' });
+  }
+});
+
 // Get single product
 router.get('/:id', async (req, res) => {
   try {
@@ -162,5 +184,7 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
 
 module.exports = router;

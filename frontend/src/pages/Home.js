@@ -1,29 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [contactForm, setContactForm] = useState({
-    name: '',
-    email: '',
-    message: ''
+    name: "",
+    email: "",
+    message: "",
   });
   const [featuredCategories, setFeaturedCategories] = useState([
-    { name: 'Rings', image: '💍', count: '120+ Items', gradient: 'from-pink-400 to-rose-600' },
-    { name: 'Necklaces', image: '📿', count: '85+ Items', gradient: 'from-purple-400 to-indigo-600' },
-    { name: 'Earrings', image: '👂', count: '65+ Items', gradient: 'from-blue-400 to-cyan-600' },
-    { name: 'Bracelets', image: '📿', count: '45+ Items', gradient: 'from-emerald-400 to-teal-600' },
+    {
+      name: "Rings",
+      image: "💍",
+      count: "120+ Items",
+      gradient: "from-pink-400 to-rose-600",
+    },
+    {
+      name: "Necklaces",
+      image: "📿",
+      count: "85+ Items",
+      gradient: "from-purple-400 to-indigo-600",
+    },
+    {
+      name: "Earrings",
+      image: "👂",
+      count: "65+ Items",
+      gradient: "from-blue-400 to-cyan-600",
+    },
+    {
+      name: "Bracelets",
+      image: "📿",
+      count: "45+ Items",
+      gradient: "from-emerald-400 to-teal-600",
+    },
   ]);
+
+  useEffect(() => {
+    const fetchCategoryCounts = async () => {
+      try {
+        const response = await axios.get("/api/products/category-counts");
+        setFeaturedCategories([
+          {
+            name: "Rings",
+            image: "💍",
+            count: `${response.data.rings}+ Items`,
+            gradient: "from-pink-400 to-rose-600",
+            value: "rings",
+          },
+          {
+            name: "Necklaces",
+            image: "📿",
+            count: `${response.data.necklaces}+ Items`,
+            gradient: "from-purple-400 to-indigo-600",
+            value: "necklaces",
+          },
+          {
+            name: "Earrings",
+            image: "👂",
+            count: `${response.data.earrings}+ Items`,
+            gradient: "from-blue-400 to-cyan-600",
+            value: "earrings",
+          },
+          {
+            name: "Bracelets",
+            image: "📿",
+            count: `${response.data.bracelets}+ Items`,
+            gradient: "from-emerald-400 to-teal-600",
+            value: "bracelets",
+          },
+        ]);
+      } catch (error) {
+        console.error("Error fetching category counts:", error);
+        // If API fails, set default counts
+        setFeaturedCategories((prev) =>
+          prev.map((cat) => ({
+            ...cat,
+            count: "0+ Items",
+          }))
+        );
+      }
+    };
+
+    fetchCategoryCounts();
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('/api/products?limit=8&featured=true');
+        const response = await axios.get("/api/products?limit=8&featured=true");
         setProducts(response.data.products);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
         setProducts([]);
       } finally {
         setLoading(false);
@@ -36,19 +105,19 @@ function Home() {
   const handleContactSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/contact', contactForm);
-      setContactForm({ name: '', email: '', message: '' });
-      alert('Thank you for your message! We\'ll get back to you soon.');
+      await axios.post("/api/contact", contactForm);
+      setContactForm({ name: "", email: "", message: "" });
+      alert("Thank you for your message! We'll get back to you soon.");
     } catch (error) {
-      console.error('Error sending message:', error);
-      alert('Failed to send message. Please try again.');
+      console.error("Error sending message:", error);
+      alert("Failed to send message. Please try again.");
     }
   };
 
   const handleContactChange = (e) => {
     setContactForm({
       ...contactForm,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -71,7 +140,7 @@ function Home() {
           <div className="absolute -top-1/2 -right-1/2 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute -bottom-1/2 -left-1/2 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <div className="inline-block mb-6">
             <span className="bg-gradient-to-r from-pink-400 to-purple-400 text-transparent bg-clip-text text-lg font-semibold tracking-wide">
@@ -79,14 +148,19 @@ function Home() {
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            Exquisite <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-transparent bg-clip-text">Jewellery</span>
-            <br />Collection
+            Exquisite{" "}
+            <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-transparent bg-clip-text">
+              Jewellery
+            </span>
+            <br />
+            Collection
           </h1>
           <p className="text-xl md:text-2xl mb-10 text-blue-100 max-w-3xl mx-auto leading-relaxed">
-            Discover timeless pieces crafted with perfection, where elegance meets artistry
+            Discover timeless pieces crafted with perfection, where elegance
+            meets artistry
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
+            <Link
               to="/products"
               className="inline-block bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 px-10 py-4 rounded-full font-bold hover:shadow-2xl transition duration-300 transform hover:scale-105 hover:-translate-y-1"
             >
@@ -108,20 +182,24 @@ function Home() {
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-purple-400 to-blue-400 mx-auto rounded-full"></div>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {featuredCategories.map((category, index) => (
               <Link
                 key={index}
-                to={`/products?category=${category.name.toLowerCase()}`}
+                to={`/products?category=${category.value}`}
                 className="group relative bg-white rounded-2xl shadow-xl p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 overflow-hidden"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
+                ></div>
                 <div className="relative z-10">
                   <div className="text-5xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
                     {category.image}
                   </div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">{category.name}</h3>
+                  <h3 className="font-bold text-xl text-gray-900 mb-2">
+                    {category.name}
+                  </h3>
                   <p className="text-gray-600 font-medium">{category.count}</p>
                 </div>
               </Link>
@@ -135,49 +213,70 @@ function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-16">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">Featured Products</h2>
-              <p className="text-gray-600 text-lg">Handpicked luxury pieces just for you</p>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+                Featured Products
+              </h2>
+              <p className="text-gray-600 text-lg">
+                Handpicked luxury pieces just for you
+              </p>
             </div>
-            <Link 
+            <Link
               to="/products"
               className="hidden md:inline-flex items-center bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition duration-300 transform hover:scale-105"
             >
               View All Collection →
             </Link>
           </div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.map(product => (
-              <div key={product._id} className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+            {products.map((product) => (
+              <div
+                key={product._id}
+                className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+              >
                 <div className="relative h-64 overflow-hidden">
-                  <img 
-                    src={product.images?.[0]?.url || '/api/placeholder/300/300'} 
+                  <img
+                    src={product.images?.[0]?.url || "/api/placeholder/300/300"}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                   />
-                  {product.originalPrice && product.originalPrice > product.price && (
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                        Save ${(product.originalPrice - product.price).toFixed(0)}
-                      </span>
-                    </div>
-                  )}
+                  {product.originalPrice &&
+                    product.originalPrice > product.price && (
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                          Save $
+                          {(product.originalPrice - product.price).toFixed(0)}
+                        </span>
+                      </div>
+                    )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
                 <div className="p-6">
-                  <p className="text-sm text-purple-600 font-semibold mb-2">{product.category}</p>
-                  <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2">{product.name}</h3>
+                  <p className="text-sm text-purple-600 font-semibold mb-2">
+                    {product.category}
+                  </p>
+                  <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2">
+                    {product.name}
+                  </h3>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">
-                      <span className="text-2xl font-bold text-purple-600">${product.price}</span>
+                      <span className="text-2xl font-bold text-purple-600">
+                        ${product.price}
+                      </span>
                       {product.originalPrice && (
-                        <span className="text-lg text-gray-500 line-through">${product.originalPrice}</span>
+                        <span className="text-lg text-gray-500 line-through">
+                          ${product.originalPrice}
+                        </span>
                       )}
                     </div>
                   </div>
-                  <Link 
+                  <Link
                     to={`/product/${product._id}`}
                     className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition duration-200 transform hover:scale-105 flex items-center justify-center"
+
+                    // key={index}
+                    // to={`/products?category=${category.value}`}
+                    // className="group relative bg-white rounded-2xl shadow-xl p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 overflow-hidden"
                   >
                     ✨ View Details
                   </Link>
@@ -188,48 +287,65 @@ function Home() {
 
           {products.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-600 text-lg">No featured products available at the moment.</p>
+              <p className="text-gray-600 text-lg">
+                No featured products available at the moment.
+              </p>
             </div>
           )}
         </div>
       </section>
-      
+
       {/* Features Section - Modern design */}
       <section className="py-20 px-4 bg-gradient-to-br from-purple-50 to-blue-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">Why Choose Us</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">Experience luxury shopping with unmatched service and quality</p>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">
+              Why Choose Us
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Experience luxury shopping with unmatched service and quality
+            </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center group">
               <div className="bg-gradient-to-br from-green-400 to-emerald-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <span className="text-3xl">🚚</span>
               </div>
-              <h3 className="font-bold text-xl mb-3 text-gray-900">Free Shipping</h3>
-              <p className="text-gray-600 leading-relaxed">Complimentary shipping on all orders over $100 worldwide</p>
+              <h3 className="font-bold text-xl mb-3 text-gray-900">
+                Free Shipping
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                Complimentary shipping on all orders over $100 worldwide
+              </p>
             </div>
-            
+
             <div className="text-center group">
               <div className="bg-gradient-to-br from-blue-400 to-indigo-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <span className="text-3xl">🔒</span>
               </div>
-              <h3 className="font-bold text-xl mb-3 text-gray-900">Secure Payment</h3>
-              <p className="text-gray-600 leading-relaxed">256-bit SSL encryption ensures your payment is 100% secure</p>
+              <h3 className="font-bold text-xl mb-3 text-gray-900">
+                Secure Payment
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                256-bit SSL encryption ensures your payment is 100% secure
+              </p>
             </div>
-            
+
             <div className="text-center group">
               <div className="bg-gradient-to-br from-purple-400 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                 <span className="text-3xl">💎</span>
               </div>
-              <h3 className="font-bold text-xl mb-3 text-gray-900">Quality Guarantee</h3>
-              <p className="text-gray-600 leading-relaxed">30-day money back guarantee with lifetime warranty</p>
+              <h3 className="font-bold text-xl mb-3 text-gray-900">
+                Quality Guarantee
+              </h3>
+              <p className="text-gray-600 leading-relaxed">
+                30-day money back guarantee with lifetime warranty
+              </p>
             </div>
           </div>
         </div>
       </section>
-
 
       {/* Contact Us Section */}
       <section className="py-20 px-4 bg-gradient-to-br from-gray-900 to-purple-900 text-white">
@@ -238,12 +354,17 @@ function Home() {
             {/* Contact Info */}
             <div>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Get In <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-transparent bg-clip-text">Touch</span>
+                Get In{" "}
+                <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-transparent bg-clip-text">
+                  Touch
+                </span>
               </h2>
               <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                Have questions about our jewelry collection? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                Have questions about our jewelry collection? We'd love to hear
+                from you. Send us a message and we'll respond as soon as
+                possible.
               </p>
-              
+
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
                   <div className="bg-purple-600 w-12 h-12 rounded-full flex items-center justify-center">
@@ -251,10 +372,12 @@ function Home() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg">Visit Our Store</h4>
-                    <p className="text-gray-300">123 Jewelry Lane, Diamond District, NY 10001</p>
+                    <p className="text-gray-300">
+                      123 Jewelry Lane, Diamond District, NY 10001
+                    </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-4">
                   <div className="bg-purple-600 w-12 h-12 rounded-full flex items-center justify-center">
                     <span className="text-xl">📞</span>
@@ -264,7 +387,7 @@ function Home() {
                     <p className="text-gray-300">+1 (555) 123-4567</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-4">
                   <div className="bg-purple-600 w-12 h-12 rounded-full flex items-center justify-center">
                     <span className="text-xl">✉️</span>
@@ -281,7 +404,9 @@ function Home() {
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
               <form onSubmit={handleContactSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-semibold mb-2">Full Name</label>
+                  <label className="block text-sm font-semibold mb-2">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     name="name"
@@ -292,9 +417,11 @@ function Home() {
                     placeholder="Enter your full name"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-semibold mb-2">Email Address</label>
+                  <label className="block text-sm font-semibold mb-2">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -305,9 +432,11 @@ function Home() {
                     placeholder="Enter your email address"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-semibold mb-2">Message</label>
+                  <label className="block text-sm font-semibold mb-2">
+                    Message
+                  </label>
                   <textarea
                     name="message"
                     value={contactForm.message}
@@ -318,7 +447,7 @@ function Home() {
                     placeholder="Tell us how we can help you..."
                   ></textarea>
                 </div>
-                
+
                 <button
                   type="submit"
                   className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition duration-300 transform hover:scale-105"
@@ -341,19 +470,34 @@ function Home() {
                 LuxuryJewelry
               </h3>
               <p className="text-gray-400 mb-6 leading-relaxed">
-                Creating timeless pieces that celebrate life's most precious moments. Our expert craftsmen combine traditional techniques with modern design to bring you jewelry that tells your unique story.
+                Creating timeless pieces that celebrate life's most precious
+                moments. Our expert craftsmen combine traditional techniques
+                with modern design to bring you jewelry that tells your unique
+                story.
               </p>
               <div className="flex space-x-4">
-                <a href="#" className="bg-purple-600 hover:bg-purple-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300">
+                <a
+                  href="#"
+                  className="bg-purple-600 hover:bg-purple-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"
+                >
                   📘
                 </a>
-                <a href="#" className="bg-pink-600 hover:bg-pink-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300">
+                <a
+                  href="#"
+                  className="bg-pink-600 hover:bg-pink-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"
+                >
                   📷
                 </a>
-                <a href="#" className="bg-blue-600 hover:bg-blue-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300">
+                <a
+                  href="#"
+                  className="bg-blue-600 hover:bg-blue-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"
+                >
                   🐦
                 </a>
-                <a href="#" className="bg-red-600 hover:bg-red-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300">
+                <a
+                  href="#"
+                  className="bg-red-600 hover:bg-red-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"
+                >
                   📺
                 </a>
               </div>
@@ -363,11 +507,46 @@ function Home() {
             <div>
               <h4 className="font-bold text-lg mb-6">Quick Links</h4>
               <ul className="space-y-3">
-                <li><Link to="/products" className="text-gray-400 hover:text-white transition duration-300">All Products</Link></li>
-                <li><Link to="/products?category=rings" className="text-gray-400 hover:text-white transition duration-300">Rings</Link></li>
-                <li><Link to="/products?category=necklaces" className="text-gray-400 hover:text-white transition duration-300">Necklaces</Link></li>
-                <li><Link to="/products?category=earrings" className="text-gray-400 hover:text-white transition duration-300">Earrings</Link></li>
-                <li><Link to="/products?category=bracelets" className="text-gray-400 hover:text-white transition duration-300">Bracelets</Link></li>
+                <li>
+                  <Link
+                    to="/products"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    All Products
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/products?category=rings"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    Rings
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/products?category=necklaces"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    Necklaces
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/products?category=earrings"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    Earrings
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/products?category=bracelets"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    Bracelets
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -375,11 +554,46 @@ function Home() {
             <div>
               <h4 className="font-bold text-lg mb-6">Customer Service</h4>
               <ul className="space-y-3">
-                <li><Link to="/contact" className="text-gray-400 hover:text-white transition duration-300">Contact Us</Link></li>
-                <li><Link to="/shipping" className="text-gray-400 hover:text-white transition duration-300">Shipping Info</Link></li>
-                <li><Link to="/returns" className="text-gray-400 hover:text-white transition duration-300">Returns</Link></li>
-                <li><Link to="/sizing" className="text-gray-400 hover:text-white transition duration-300">Size Guide</Link></li>
-                <li><Link to="/care" className="text-gray-400 hover:text-white transition duration-300">Jewelry Care</Link></li>
+                <li>
+                  <Link
+                    to="/contact"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    Contact Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/shipping"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    Shipping Info
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/returns"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    Returns
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/sizing"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    Size Guide
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/care"
+                    className="text-gray-400 hover:text-white transition duration-300"
+                  >
+                    Jewelry Care
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
@@ -389,7 +603,9 @@ function Home() {
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="mb-6 md:mb-0">
                 <h4 className="font-bold text-xl mb-2">Stay Updated</h4>
-                <p className="text-gray-400">Subscribe to get special offers and exclusive updates</p>
+                <p className="text-gray-400">
+                  Subscribe to get special offers and exclusive updates
+                </p>
               </div>
               <div className="flex w-full md:w-auto">
                 <input
@@ -411,15 +627,29 @@ function Home() {
                 © 2024 Luxury Jewelry. All rights reserved.
               </p>
               <div className="flex space-x-6">
-                <Link to="/privacy" className="text-gray-400 hover:text-white transition duration-300">Privacy Policy</Link>
-                <Link to="/terms" className="text-gray-400 hover:text-white transition duration-300">Terms of Service</Link>
-                <Link to="/cookies" className="text-gray-400 hover:text-white transition duration-300">Cookie Policy</Link>
+                <Link
+                  to="/privacy"
+                  className="text-gray-400 hover:text-white transition duration-300"
+                >
+                  Privacy Policy
+                </Link>
+                <Link
+                  to="/terms"
+                  className="text-gray-400 hover:text-white transition duration-300"
+                >
+                  Terms of Service
+                </Link>
+                <Link
+                  to="/cookies"
+                  className="text-gray-400 hover:text-white transition duration-300"
+                >
+                  Cookie Policy
+                </Link>
               </div>
             </div>
           </div>
         </div>
       </footer>
-      
     </div>
   );
 }
