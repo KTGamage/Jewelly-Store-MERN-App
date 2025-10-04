@@ -20,18 +20,39 @@ const Products = () => {
     totalProducts: 0,
   });
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
 
-  // Add this useEffect for custom dropdown
+  // Helper functions
+  const getSortOptionLabel = (value) => {
+    return (
+      sortOptions.find((option) => option.value === value)?.label ||
+      "Newest First"
+    );
+  };
+
+  const getSortOptionIcon = (value) => {
+    return sortOptions.find((option) => option.value === value)?.icon || "✨";
+  };
+
+  // Add this useEffect for closing dropdowns when clicking outside
   useEffect(() => {
+    // Close category dropdown
     const handleClickOutside = (event) => {
       if (!event.target.closest(".category-dropdown-container")) {
         setShowCategoryDropdown(false);
+      }
+      // Close sort dropdown
+      if (
+        !event.target.closest(".sort-dropdown-container") &&
+        showSortDropdown
+      ) {
+        setShowSortDropdown(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [showCategoryDropdown, showSortDropdown]);
 
   useEffect(() => {
     // Read category from URL query parameters
@@ -128,6 +149,15 @@ const Products = () => {
     { value: "earrings", label: "Earrings", icon: "👂" },
     { value: "bracelets", label: "Bracelets", icon: "⌚" },
     { value: "other", label: "Other", icon: "✨" },
+  ];
+
+  const sortOptions = [
+    { value: "newest", label: "Newest First", icon: "✨" },
+    { value: "price_asc", label: "Price: Low to High", icon: "💲" },
+    { value: "price_desc", label: "Price: High to Low", icon: "💎" },
+    { value: "name_asc", label: "Name: A to Z", icon: "🔤" },
+    { value: "name_desc", label: "Name: Z to A", icon: "🔠" },
+    { value: "rating", label: "Highest Rated", icon: "⭐" },
   ];
 
   return (
@@ -348,7 +378,7 @@ const Products = () => {
                 </div>
 
                 {/* Sort Options */}
-                <div>
+                {/* <div>
                   <label className="block text-sm font-bold text-gray-700 mb-4">
                     <span className="mr-2">🔄</span>
                     Sort By
@@ -366,6 +396,59 @@ const Products = () => {
                     <option value="name_desc">🔠 Name: Z to A</option>
                     <option value="rating">⭐ Highest Rated</option>
                   </select>
+                </div> */}
+
+                {/* Sort Options - Custom Dropdown */}
+                <div className="sort-dropdown-container">
+                  <label className="block text-sm font-bold text-gray-700 mb-3">
+                    <span className="mr-2">🔄</span>
+                    Sort By
+                  </label>
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowSortDropdown(!showSortDropdown)}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-300 bg-white text-left flex items-center justify-between hover:border-purple-300"
+                    >
+                      <span className="flex items-center">
+                        {getSortOptionIcon(filters.sort)}
+                        <span className="ml-2">
+                          {getSortOptionLabel(filters.sort)}
+                        </span>
+                      </span>
+                      <span
+                        className={`transform transition-transform duration-200 ${
+                          showSortDropdown ? "rotate-180" : ""
+                        }`}
+                      >
+                        ▾
+                      </span>
+                    </button>
+
+                    {showSortDropdown && (
+                      <div className="absolute z-20 w-full bottom-full mb-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                        {sortOptions.map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => {
+                              setFilters((prev) => ({
+                                ...prev,
+                                sort: option.value,
+                              }));
+                              setShowSortDropdown(false);
+                            }}
+                            className={`w-full px-4 py-3 text-left flex items-center space-x-3 hover:bg-purple-50 transition duration-200 ${
+                              filters.sort === option.value
+                                ? "bg-purple-50 text-purple-700"
+                                : "text-gray-700"
+                            }`}
+                          >
+                            <span className="text-lg">{option.icon}</span>
+                            <span className="font-medium">{option.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
