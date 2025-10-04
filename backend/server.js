@@ -148,25 +148,139 @@
 // const PORT = process.env.PORT || 5000;
 // app.listen(PORT, () => console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`));
 
+
+
+
+
+
+
+
+
+// const express = require('express');
+// const mongoose = require('mongoose');
+// const cors = require('cors');
+// const dotenv = require('dotenv');
+// const passport = require('passport');
+// const path = require('path'); 
+
+// dotenv.config();
+
+// const app = express();
+
+// // Basic CORS setup first
+// app.use(cors());
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
+// app.use(passport.initialize());
+
+// // Import and configure passport
+// require('./config/passport');
+
+// // MongoDB connection
+// const connectDB = async () => {
+//   try {
+//     const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/jewellery_store', {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     });
+//     console.log(`MongoDB Connected: ${conn.connection.host}`);
+//   } catch (error) {
+//     console.error('Database connection error:', error.message);
+//     process.exit(1);
+//   }
+// };
+
+// connectDB();
+
+// // Test route to check if server is working
+// app.get('/api/test', (req, res) => {
+//   res.json({ message: 'Backend server is working!' });
+// });
+
+// // Routes
+// app.use('/api/auth', require('./routes/auth'));
+// app.use('/api/products', require('./routes/products'));
+// app.use('/api/orders', require('./routes/orders'));
+// app.use('/api/users', require('./routes/users'));
+// app.use('/api/chatbot', require('./routes/chatbot'));
+// app.use('/api/admin', require('./routes/admin'));
+// app.use('/api/contact', require('./routes/contact'));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/api/upload', require('./routes/upload'));
+
+// // Health check endpoint
+// app.get('/api/health', (req, res) => {
+//   res.status(200).json({ 
+//     status: 'OK', 
+//     message: 'Server is running',
+//     timestamp: new Date().toISOString(),
+//     environment: process.env.NODE_ENV
+//   });
+// });
+
+// // Error handling middleware
+// app.use((err, req, res, next) => {
+//   console.error(err.stack);
+//   res.status(500).json({ 
+//     message: 'Something went wrong!',
+//     error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+//   });
+// });
+
+// // 404 handler for API routes
+// app.use('/api/*', (req, res) => {
+//   res.status(404).json({ message: 'API route not found' });
+// });
+
+// // 404 handler for all other routes
+// app.use('*', (req, res) => {
+//   res.status(404).json({ message: 'Route not found' });
+// });
+
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => {
+//   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+//   console.log(`Health check: http://localhost:${PORT}/api/health`);
+// });
+
+
+
+
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const passport = require('passport');
+const session = require('express-session');
 const path = require('path'); 
 
 dotenv.config();
 
 const app = express();
 
-// Basic CORS setup first
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Session configuration
+app.use(session({
+  secret: process.env.JWT_SECRET || 'fallback_secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
+
+// Initialize passport
 app.use(passport.initialize());
+app.use(passport.session());
 
 // Import and configure passport
 require('./config/passport');
+
+// Basic CORS setup
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  credentials: true
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // MongoDB connection
 const connectDB = async () => {
@@ -184,7 +298,7 @@ const connectDB = async () => {
 
 connectDB();
 
-// Test route to check if server is working
+// Test route
 app.get('/api/test', (req, res) => {
   res.json({ message: 'Backend server is working!' });
 });

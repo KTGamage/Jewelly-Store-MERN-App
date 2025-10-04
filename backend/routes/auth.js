@@ -76,11 +76,11 @@ router.post('/login', [
       return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
     }
 
-    // Check if user has a password (Google users might not have one)
-    if (!user.password) {
+    // Check if user registered with Google
+    if (user.googleId && !user.password) {
       return res.status(400).json({ 
         errors: [{ 
-          msg: 'This account uses social login. Please sign in with Google.' 
+          msg: 'This account uses Google login. Please sign in with Google.' 
         }] 
       });
     }
@@ -107,6 +107,34 @@ router.post('/login', [
     res.status(500).send('Server error');
   }
 });
+
+// Google OAuth Routes
+router.get('/google', 
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+router.get('/google/callback',
+  passport.authenticate('google', { 
+    failureRedirect: `${process.env.CLIENT_URL}/login`,
+    session: false 
+  }),
+  async (req, res) => {
+    try {
+      const token = generateToken(req.user._id);
+      
+      // Redirect to frontend with token
+      res.redirect(`${process.env.CLIENT_URL}/oauth-success?token=${token}&user=${encodeURIComponent(JSON.stringify({
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role
+      }))}`);
+    } catch (error) {
+      console.error('Google callback error:', error);
+      res.redirect(`${process.env.CLIENT_URL}/login?error=oauth_failed`);
+    }
+  }
+);
 
 // Get current user
 router.get('/me', async (req, res) => {

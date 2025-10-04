@@ -46,6 +46,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Cart from './pages/Cart';
 import Chatbot from './components/Chatbot';
+import OAuthSuccess from './components/OAuthSuccess';
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           <Navbar />
           <main>
             <Routes>
+              <Route path="/oauth-success" element={<OAuthSuccess />} />
               <Route path="/" element={<Home />} />
               <Route path="/products" element={<Products />} />
               <Route path="/product/:id" element={<ProductDetail />} />

@@ -74,6 +74,17 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const googleSignIn = () => {
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = `${API_BASE_URL}/api/auth/google`;
+  };
+
+  const handleOAuthCallback = (token, userData) => {
+    localStorage.setItem('token', token);
+    axios.defaults.headers.common['x-auth-token'] = token;
+    setUser(userData);
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['x-auth-token'];
@@ -84,6 +95,8 @@ export function AuthProvider({ children }) {
     user,
     login,
     register,
+    googleSignIn,
+    handleOAuthCallback,
     logout,
     isAuthenticated: !!user
   };
