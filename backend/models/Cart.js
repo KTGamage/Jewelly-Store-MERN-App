@@ -11,6 +11,10 @@ const cartItemSchema = new mongoose.Schema({
     required: true,
     min: [1, 'Quantity must be at least 1'],
     default: 1
+  },
+  addedAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -37,5 +41,24 @@ cartSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
+
+// Add virtual for total items count
+cartSchema.virtual('totalItems').get(function() {
+  return this.items.reduce((total, item) => total + item.quantity, 0);
+});
+
+// Add virtual for total price
+cartSchema.virtual('totalPrice').get(function() {
+  return this.items.reduce((total, item) => {
+    if (item.product && typeof item.product === 'object' && 'price' in item.product) {
+      return total + (item.product.price * item.quantity);
+    }
+    return total;
+  }, 0);
+});
+
+// Ensure virtual fields are serialized
+cartSchema.set('toJSON', { virtuals: true });
+cartSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('Cart', cartSchema);

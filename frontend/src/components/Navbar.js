@@ -95,7 +95,7 @@ const Navbar = () => {
                 >
                   <span className="text-2xl">🛒</span>
                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
-                    2
+                    {getCartItemsCount()}
                   </div>
                   <div className="absolute inset-0 bg-purple-600/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Link>
@@ -197,16 +197,6 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center space-x-3">
             {user && (
-              // <Link
-              //   to="/cart"
-              //   className="relative p-2 rounded-xl text-gray-700 hover:text-purple-600"
-              // >
-              //   <span className="text-xl">🛒</span>
-              //   <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
-              //     2
-              //   </div>
-              // </Link>
-
               <Link
                 to="/cart"
                 className="relative p-3 rounded-xl text-gray-700 hover:text-purple-600 hover:bg-purple-50 transition-all duration-300 group"
