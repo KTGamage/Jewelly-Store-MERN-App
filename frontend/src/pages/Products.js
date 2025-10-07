@@ -235,48 +235,6 @@ const Products = () => {
               </div>
 
               <div className="space-y-8">
-                {/* Category Filter */}
-                {/* <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-4">
-                    Category
-                  </label>
-                  <div className="space-y-3">
-                    {categoryOptions.map((option) => (
-                      <label
-                        key={option.value}
-                        className="flex items-center cursor-pointer group"
-                      >
-                        <input
-                          type="radio"
-                          name="category"
-                          value={option.value}
-                          checked={filters.category === option.value}
-                          onChange={handleFilterChange}
-                          className="sr-only"
-                        />
-                        <div
-                          className={`flex items-center w-full p-3 rounded-xl border-2 transition-all duration-300 ${
-                            filters.category === option.value
-                              ? "border-purple-500 bg-purple-50"
-                              : "border-gray-200 hover:border-purple-300"
-                          }`}
-                        >
-                          <span className="text-xl mr-3">{option.icon}</span>
-                          <span
-                            className={`font-medium ${
-                              filters.category === option.value
-                                ? "text-purple-700"
-                                : "text-gray-700"
-                            }`}
-                          >
-                            {option.label}
-                          </span>
-                        </div>
-                      </label>
-                    ))}
-                  </div>
-                </div> */}
-                {/* Category Filter - Enhanced Dropdown */}
 
                 <div className="category-dropdown-container">
                   {/* Category Filter - Custom Dropdown */}
@@ -376,27 +334,6 @@ const Products = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Sort Options */}
-                {/* <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-4">
-                    <span className="mr-2">🔄</span>
-                    Sort By
-                  </label>
-                  <select
-                    name="sort"
-                    value={filters.sort}
-                    onChange={handleFilterChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-300 bg-white"
-                  >
-                    <option value="newest">✨ Newest First</option>
-                    <option value="price_asc">💲 Price: Low to High</option>
-                    <option value="price_desc">💎 Price: High to Low</option>
-                    <option value="name_asc">🔤 Name: A to Z</option>
-                    <option value="name_desc">🔠 Name: Z to A</option>
-                    <option value="rating">⭐ Highest Rated</option>
-                  </select>
-                </div> */}
 
                 {/* Sort Options - Custom Dropdown */}
                 <div className="sort-dropdown-container">

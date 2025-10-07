@@ -11,25 +11,32 @@ const createAdminUser = async () => {
       useUnifiedTopology: true,
     });
 
+    console.log('Connected to MongoDB');
+
     // Check if admin user already exists
     const existingAdmin = await User.findOne({ email: 'admin@jewellery.com' });
     
     if (existingAdmin) {
       console.log('Admin user already exists');
-      await mongoose.connection.close();
-      return;
+      // Update existing admin to ensure correct role and password
+      existingAdmin.role = 'admin';
+      existingAdmin.name = 'Admin User';
+      await existingAdmin.save();
+      console.log('Admin user updated');
+    } else {
+      // Create admin user
+      const adminUser = new User({
+        name: 'Admin User',
+        email: 'admin@jewellery.com',
+        password: 'admin123',
+        role: 'admin',
+        isVerified: true
+      });
+
+      await adminUser.save();
+      console.log('Admin user created successfully!');
     }
 
-    // Create admin user
-    const adminUser = new User({
-      name: 'Admin User',
-      email: 'admin@jewellery.com',
-      password: 'admin123',
-      role: 'admin'
-    });
-
-    await adminUser.save();
-    console.log('Admin user created successfully!');
     console.log('Email: admin@jewellery.com');
     console.log('Password: admin123');
 
@@ -40,4 +47,9 @@ const createAdminUser = async () => {
   }
 };
 
-createAdminUser();
+// Run if called directly
+if (require.main === module) {
+  createAdminUser();
+}
+
+module.exports = createAdminUser;

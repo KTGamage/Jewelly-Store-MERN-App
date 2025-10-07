@@ -101,4 +101,23 @@ router.put('/:id/status', auth, async (req, res) => {
   }
 });
 
+// Get all orders (admin only)
+router.get('/', auth, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ msg: 'Access denied. Admin required.' });
+    }
+    
+    const orders = await Order.find()
+      .populate('user', 'name email')
+      .populate('items.product', 'name images')
+      .sort({ createdAt: -1 });
+    
+    res.json(orders);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 module.exports = router;
