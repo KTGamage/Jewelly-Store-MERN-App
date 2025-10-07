@@ -6,6 +6,7 @@ const passport = require('passport');
 const session = require('express-session');
 const path = require('path'); 
 const productRoutes = require('./routes/products');
+const { OpenAI } = require('openai');
 
 dotenv.config();
 
@@ -94,6 +95,37 @@ app.get('/api/test', (req, res) => {
     message: 'Backend server is working!',
     timestamp: new Date().toISOString()
   });
+});
+
+// Add this to your server.js for testing
+app.get('/api/test-openai', async (req, res) => {
+  try {
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({ error: 'OPENAI_API_KEY not set' });
+    }
+
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: "Hello, are you working?" }],
+      max_tokens: 10
+    });
+
+    res.json({ 
+      status: 'success',
+      message: 'OpenAI API is working',
+      response: response.choices[0].message.content
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      status: 'error',
+      error: err.message,
+      code: err.code 
+    });
+  }
 });
 
 // Routes
