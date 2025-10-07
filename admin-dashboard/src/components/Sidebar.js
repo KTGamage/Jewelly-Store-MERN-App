@@ -1,10 +1,17 @@
 // import React from 'react';
-// import { Link, useLocation } from 'react-router-dom';
+// import { Link, useLocation, useNavigate} from 'react-router-dom';
 // import { useAuth } from '../context/AuthContext';
 
 // const Sidebar = () => {
 //   const { logout } = useAuth();
 //   const location = useLocation();
+//   const navigate = useNavigate();
+
+//   const handleLogout = () => {
+//     logout();
+//     navigate('/login');
+//   };
+
 
 //   const menuItems = [
 //     { path: '/', name: 'Dashboard', icon: '📊' },
@@ -30,7 +37,7 @@
 //       </nav>
 //       <div className="absolute bottom-0 w-full p-4">
 //         <button
-//           onClick={logout}
+//           onClick={handleLogout}
 //           className="w-full flex items-center justify-center px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200"
 //         >
 //           Logout
@@ -82,10 +89,10 @@ import { useAuth } from '../context/AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const menuItems = [
-  { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
-  { path: '/admin/products', label: 'Products', icon: '💎' },
-  { path: '/admin/orders', label: 'Orders', icon: '📦' },
-  { path: '/admin/users', label: 'Users', icon: '👥' },
+  { path: '/', label: 'Dashboard', icon: '📊' },
+  { path: '/products', label: 'Products', icon: '💎' },
+  { path: '/orders', label: 'Orders', icon: '📦' },
+  { path: '/users', label: 'Users', icon: '👥' },
 ];
 
 function Sidebar() {

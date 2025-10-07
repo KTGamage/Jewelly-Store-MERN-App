@@ -1,6 +1,7 @@
 {
   "name": "jewellery-admin",
   "version": "1.0.0",
+  "proxy": "http://localhost:5000",
   "description": "Admin dashboard for jewellery app",
   "scripts": {
     "start": "react-scripts start",
