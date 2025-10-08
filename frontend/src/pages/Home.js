@@ -10,6 +10,7 @@ function Home() {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [featuredCategories, setFeaturedCategories] = useState([
     {
       name: "Rings",
@@ -106,15 +107,38 @@ function Home() {
     fetchProducts();
   }, []);
 
+  // const handleContactSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     await axios.post("/api/contact", contactForm);
+  //     setContactForm({ name: "", email: "", message: "" });
+  //     alert("Thank you for your message! We'll get back to you soon.");
+  //   } catch (error) {
+  //     console.error("Error sending message:", error);
+  //     alert("Failed to send message. Please try again.");
+  //   }
+  // };
+
   const handleContactSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     try {
-      await axios.post("/api/contact", contactForm);
+      const response = await axios.post("/api/contact", contactForm);
       setContactForm({ name: "", email: "", message: "" });
-      alert("Thank you for your message! We'll get back to you soon.");
+      alert(
+        response.data.message ||
+          "Thank you for your message! We'll get back to you soon."
+      );
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("Failed to send message. Please try again.");
+      if (error.response && error.response.data.message) {
+        alert(error.response.data.message);
+      } else {
+        alert("Failed to send message. Please try again.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -277,11 +301,6 @@ function Home() {
                   <Link
                     to={`/product/${product._id}`}
                     className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition duration-200 transform hover:scale-105 flex items-center justify-center"
-
-                    // key={index}
-                    // to={`/products?category=${category.value}`}
-                    // className="group relative bg-white rounded-2xl shadow-xl p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 overflow-hidden"
-
                   >
                     ✨ View Details
                   </Link>
@@ -418,6 +437,7 @@ function Home() {
                     value={contactForm.name}
                     onChange={handleContactChange}
                     required
+                    disabled={isSubmitting}
                     className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     placeholder="Enter your full name"
                   />
@@ -433,6 +453,7 @@ function Home() {
                     value={contactForm.email}
                     onChange={handleContactChange}
                     required
+                    disabled={isSubmitting}
                     className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     placeholder="Enter your email address"
                   />
@@ -447,6 +468,7 @@ function Home() {
                     value={contactForm.message}
                     onChange={handleContactChange}
                     required
+                    disabled={isSubmitting}
                     rows={5}
                     className="w-full px-4 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
                     placeholder="Tell us how we can help you..."
@@ -455,9 +477,17 @@ function Home() {
 
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition duration-300 transform hover:scale-105"
                 >
-                  Send Message ✨
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></div>
+                      Sending...
+                    </div>
+                  ) : (
+                    "Send Message ✨"
+                  )}
                 </button>
               </form>
             </div>
