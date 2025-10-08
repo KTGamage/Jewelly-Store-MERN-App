@@ -16,24 +16,28 @@ function Home() {
       image: "💍",
       count: "120+ Items",
       gradient: "from-pink-400 to-rose-600",
+      value: "rings",
     },
     {
       name: "Necklaces",
       image: "📿",
       count: "85+ Items",
       gradient: "from-purple-400 to-indigo-600",
+      value: "necklaces",
     },
     {
       name: "Earrings",
       image: "👂",
       count: "65+ Items",
       gradient: "from-blue-400 to-cyan-600",
+      value: "earrings",
     },
     {
       name: "Bracelets",
       image: "📿",
       count: "45+ Items",
       gradient: "from-emerald-400 to-teal-600",
+      value: "bracelets",
     },
   ]);
 
@@ -277,6 +281,7 @@ function Home() {
                     // key={index}
                     // to={`/products?category=${category.value}`}
                     // className="group relative bg-white rounded-2xl shadow-xl p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 overflow-hidden"
+
                   >
                     ✨ View Details
                   </Link>

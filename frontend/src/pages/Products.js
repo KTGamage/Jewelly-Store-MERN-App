@@ -21,6 +21,7 @@ const Products = () => {
   });
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true); 
 
   // Helper functions
   const getSortOptionLabel = (value) => {
@@ -34,7 +35,7 @@ const Products = () => {
     return sortOptions.find((option) => option.value === value)?.icon || "✨";
   };
 
-  // Add this useEffect for closing dropdowns when clicking outside
+  // useEffect for closing dropdowns when clicking outside
   useEffect(() => {
     // Close category dropdown
     const handleClickOutside = (event) => {
@@ -54,8 +55,8 @@ const Products = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showCategoryDropdown, showSortDropdown]);
 
+  // Read category from URL query parameters
   useEffect(() => {
-    // Read category from URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const categoryFromUrl = urlParams.get("category");
 
@@ -65,12 +66,15 @@ const Products = () => {
         category: categoryFromUrl,
       }));
     }
+    setInitialLoad(false); // Mark initial load as complete
   }, []);
 
+  // Fetch products only after initial URL parameters are processed
   useEffect(() => {
-    fetchProducts();
-  }, [filters, searchQuery]);
-
+    if (!initialLoad) { 
+      fetchProducts();
+    }
+  }, [filters, searchQuery, pagination.currentPage, initialLoad]); 
   const fetchProducts = async () => {
     try {
       setLoading(true);
