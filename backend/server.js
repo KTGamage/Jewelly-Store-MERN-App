@@ -7,6 +7,7 @@ const session = require('express-session');
 const path = require('path'); 
 const productRoutes = require('./routes/products');
 const { OpenAI } = require('openai');
+const dashboardRoutes = require('./routes/dashboard');
 
 dotenv.config();
 
@@ -139,6 +140,7 @@ app.use('/api/contact', require('./routes/contact'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/cart', require('./routes/cart'));
+app.use('/api/dashboard', dashboardRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
