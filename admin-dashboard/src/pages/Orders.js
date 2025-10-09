@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const statusColors = {
   pending: 'bg-yellow-100 text-yellow-800',
   processing: 'bg-blue-100 text-blue-800',
@@ -29,12 +31,13 @@ function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updatingOrder, setUpdatingOrder] = useState(null);
-  const [selectedOrder, setSelectedOrder] = useState(null); // For address modal
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [filters, setFilters] = useState({
     status: 'all',
     page: 1,
     limit: 10
   });
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchOrders();
@@ -43,22 +46,49 @@ function Orders() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`/api/orders?status=${filters.status}&page=${filters.page}&limit=${filters.limit}`, {
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+      setError('');
+      
+      // Use admin endpoint for orders
+      const response = await axios.get(`${API_BASE_URL}/api/admin/orders`, {
+        params: {
+          status: filters.status !== 'all' ? filters.status : undefined,
+          page: filters.page,
+          limit: filters.limit
         }
       });
 
-      if (response.data.success) {
+      if (response.data.orders) {
         setOrders(response.data.orders);
       } else {
-        throw new Error(response.data.message);
+        throw new Error(response.data.message || 'Failed to fetch orders');
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
-      alert('Failed to fetch orders: ' + error.message);
+      setError('Failed to fetch orders: ' + (error.response?.data?.message || error.message));
+      
+      // Mock data for development
+      setOrders([
+        {
+          _id: '1',
+          orderNumber: 'ORD-001',
+          user: { name: 'John Doe', email: 'john@example.com' },
+          items: [
+            { product: { name: 'Diamond Ring' }, quantity: 1 },
+            { product: { name: 'Gold Chain' }, quantity: 2 }
+          ],
+          totalAmount: 299.99,
+          orderStatus: 'pending',
+          paymentStatus: 'completed',
+          shippingAddress: {
+            street: '123 Main St',
+            city: 'New York',
+            state: 'NY',
+            zipCode: '10001',
+            country: 'USA'
+          },
+          createdAt: new Date()
+        }
+      ]);
     } finally {
       setLoading(false);
     }
@@ -67,15 +97,9 @@ function Orders() {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       setUpdatingOrder(orderId);
-      const token = localStorage.getItem('token');
-      const response = await axios.put(`/api/orders/${orderId}/status`, 
-        { orderStatus: newStatus },
-        {
-          headers: { 
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
+      const response = await axios.put(
+        `${API_BASE_URL}/api/admin/orders/${orderId}/status`,
+        { orderStatus: newStatus }
       );
 
       if (response.data.success) {
@@ -88,7 +112,7 @@ function Orders() {
       }
     } catch (error) {
       console.error('Error updating order status:', error);
-      alert('Failed to update order status: ' + error.message);
+      alert('Failed to update order status: ' + (error.response?.data?.message || error.message));
     } finally {
       setUpdatingOrder(null);
     }
@@ -112,7 +136,7 @@ function Orders() {
 
   const formatAddress = (order) => {
     if (!order.shippingAddress) return 'No address';
-    const { street, city, state, zipCode, country } = order.shippingAddress;
+    const { city, state } = order.shippingAddress;
     return `${city}, ${state}`;
   };
 
@@ -124,9 +148,9 @@ function Orders() {
 
   if (loading && orders.length === 0) {
     return (
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex min-h-screen bg-gray-100">
         <Sidebar />
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 md:ml-64 flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
       </div>
@@ -134,11 +158,17 @@ function Orders() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
       <Sidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
+      
+      {/* Main Content */}
+      <main className="flex-1 md:ml-64 min-h-screen overflow-y-auto">
+        <div className="p-4 md:p-6">
+          {/* Mobile header spacing */}
+          <div className="md:hidden h-16"></div>
+          
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
             <h1 className="text-2xl font-bold text-gray-900">Orders Management</h1>
             <div className="flex items-center space-x-4">
               <select
@@ -153,37 +183,43 @@ function Orders() {
                 <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
               </select>
-              <div className="text-sm text-gray-500">{orders.length} orders found</div>
+              <div className="text-sm text-gray-500">{orders.length} orders</div>
             </div>
           </div>
+
+          {error && (
+            <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              {error}
+            </div>
+          )}
 
           <div className="bg-white rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Order Details
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Customer
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Amount
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Shipping Address
+                    <th className="hidden lg:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Address
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden md:table-cell px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Payment
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -191,68 +227,55 @@ function Orders() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {orders.map(order => (
                     <tr key={order._id} className="hover:bg-gray-50 transition duration-200">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-4">
                         <div>
                           <div className="text-sm font-medium text-gray-900">
-                            Order #{order._id.slice(-8).toUpperCase()}
+                            #{order.orderNumber || order._id.slice(-8).toUpperCase()}
                           </div>
                           <div className="text-sm text-gray-500">
                             {getOrderTotalItems(order)} items
                           </div>
-                          {order.items.slice(0, 2).map((item, index) => (
-                            <div key={index} className="text-xs text-gray-400 truncate">
-                              {item.product?.name}
-                            </div>
-                          ))}
-                          {order.items.length > 2 && (
-                            <div className="text-xs text-gray-400">
-                              +{order.items.length - 2} more items
-                            </div>
-                          )}
+                          <div className="md:hidden text-xs text-gray-400">
+                            {order.user?.name}
+                          </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="hidden md:table-cell px-4 py-4">
                         <div className="text-sm text-gray-900">{order.user?.name}</div>
                         <div className="text-sm text-gray-500">{order.user?.email}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="hidden lg:table-cell px-4 py-4 text-sm text-gray-500">
                         {new Date(order.createdAt).toLocaleDateString()}
-                        <div className="text-xs text-gray-400">
-                          {new Date(order.createdAt).toLocaleTimeString()}
-                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="px-4 py-4 text-sm font-medium text-gray-900">
                         ${order.totalAmount?.toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="hidden lg:table-cell px-4 py-4">
                         <button
                           onClick={() => setSelectedOrder(order)}
                           className="text-sm text-gray-600 hover:text-blue-600 transition duration-200 text-left"
                         >
-                          <div className="font-medium">{formatAddress(order)}</div>
-                          <div className="text-xs text-gray-400 mt-1">
-                            Click to view full address
-                          </div>
+                          {formatAddress(order)}
                         </button>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${statusColors[order.orderStatus]}`}>
+                      <td className="px-4 py-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColors[order.orderStatus]}`}>
                           <span className="mr-1">{statusIcons[order.orderStatus]}</span>
                           {order.orderStatus}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${paymentStatusColors[order.paymentStatus]}`}>
+                      <td className="hidden md:table-cell px-4 py-4">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${paymentStatusColors[order.paymentStatus]}`}>
                           {order.paymentStatus}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                      <td className="px-4 py-4 text-sm font-medium space-x-1">
                         {getOrderStatusButtons(order).map(status => (
                           <button
                             key={status}
                             onClick={() => updateOrderStatus(order._id, status)}
                             disabled={updatingOrder === order._id}
-                            className={`px-3 py-1 rounded text-xs font-medium ${
+                            className={`px-2 py-1 rounded text-xs font-medium ${
                               status === 'cancelled' 
                                 ? 'text-red-600 hover:text-red-800 hover:bg-red-50' 
                                 : 'text-blue-600 hover:text-blue-800 hover:bg-blue-50'
@@ -261,12 +284,6 @@ function Orders() {
                             {updatingOrder === order._id ? '...' : status.charAt(0).toUpperCase() + status.slice(1)}
                           </button>
                         ))}
-                        {order.orderStatus === 'delivered' && (
-                          <span className="text-green-600 text-xs">Completed</span>
-                        )}
-                        {order.orderStatus === 'cancelled' && (
-                          <span className="text-red-600 text-xs">Cancelled</span>
-                        )}
                       </td>
                     </tr>
                   ))}
