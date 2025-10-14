@@ -5,9 +5,8 @@
   "description": "Admin dashboard for jewellery app",
   "scripts": {
     "start": "react-scripts start",
-    "dev": "node ../scripts/load-env.js react admin-dashboard && react-scripts start",
-    "build": "node ../scripts/load-env.js react admin-dashboard && react-scripts build",
-    "test": "node ../scripts/load-env.js react admin-dashboard && react-scripts test",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "dependencies": {
@@ -25,6 +24,7 @@
     "recharts": "^2.5.0",
     "tailwindcss": "^3.4.17"
   },
+  "dev": "node scripts/dev-admin.js",
   "browserslist": {
     "production": [
       ">0.2%",

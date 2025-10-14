@@ -4,9 +4,8 @@
   "description": "Frontend for jewellery app",
   "scripts": {
     "start": "react-scripts start",
-    "dev": "node ../scripts/load-env.js react frontend && react-scripts start",
-    "build": "node ../scripts/load-env.js react frontend && react-scripts build",
-    "test": "node ../scripts/load-env.js react frontend && react-scripts test",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "dependencies": {
@@ -23,6 +22,7 @@
     "react-scripts": "^5.0.1",
     "tailwindcss": "^3.4.17"
   },
+  "dev": "node scripts/dev-frontend.js",
   "browserslist": {
     "production": [
       ">0.2%",
