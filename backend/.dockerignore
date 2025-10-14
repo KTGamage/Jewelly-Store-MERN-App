@@ -7,4 +7,5 @@ README.md
 .nyc_output
 coverage
 .DS_Store
+Dockerfile
 docker-compose.yml

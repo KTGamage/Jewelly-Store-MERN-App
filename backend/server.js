@@ -37,6 +37,8 @@ require("./config/passport");
 const allowedOrigins = [
   process.env.CLIENT_URL || "http://localhost:3000",
   process.env.ADMIN_URL || "http://localhost:3001",
+  "https://luxury-jewelly-frontend.vercel.app/",
+  "https://luxury-jewellery-admin-dashboard.vercel.app/",
 ];
 
 app.use(
@@ -64,27 +66,6 @@ app.options("*", cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// MongoDB connection with better error handling
-// const connectDB = async () => {
-//   try {
-//     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true,
-//       serverSelectionTimeoutMS: 30000, // 30 seconds
-//       socketTimeoutMS: 45000, // 45 seconds
-//     });
-
-//     console.log(`MongoDB Connected: ${conn.connection.host}`);
-//     console.log(`Database: ${conn.connection.db.databaseName}`);
-
-//   } catch (error) {
-//     console.error('Database connection error:', error.message);
-//     process.exit(1);
-//   }
-// };
-
-// // Connect to database
-// connectDB();
 
 // Enhanced MongoDB connection for Docker
 const connectDB = async () => {
@@ -110,31 +91,10 @@ const connectDB = async () => {
     
   } catch (error) {
     console.error('❌ Database connection error:', error.message);
-    console.log('🔄 Retrying connection in 5 seconds...');
-    setTimeout(connectDB, 5000);
+    process.exit(1);
   }
 };
-
-// Connect to database with retry logic
-const maxRetries = 5;
-let retries = 0;
-
-const connectWithRetry = async () => {
-  try {
-    await connectDB();
-  } catch (error) {
-    retries++;
-    if (retries < maxRetries) {
-      console.log(`Retrying connection (${retries}/${maxRetries})...`);
-      setTimeout(connectWithRetry, 5000);
-    } else {
-      console.error("Max retries reached. Exiting...");
-      process.exit(1);
-    }
-  }
-};
-
-connectWithRetry();
+connectDB();
 
 // Database connection events
 mongoose.connection.on("error", (err) => {
@@ -258,7 +218,7 @@ const PORT = process.env.PORT || 5000;
 
 // Only start server if not in test mode
 if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`\n=== Server Started ===`);
     console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
     console.log(`Server URL: http://localhost:${PORT}`);

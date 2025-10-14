@@ -1,0 +1,15 @@
+# render.yaml
+services:
+  - type: web
+    name: jewellery-backend
+    env: docker
+    docker:
+      dockerfile: Dockerfile
+      context: ./backend
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+    numInstances: 1
