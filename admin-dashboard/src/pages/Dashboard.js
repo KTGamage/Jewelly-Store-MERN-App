@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000' || 'https://jewelly-store-mern-app-production.up.railway.app/';
 
 const StatCard = ({ icon, title, value, description, color, loading }) => (
   <div className={`bg-white rounded-xl shadow-sm border-l-4 ${color} p-6`}>

@@ -788,7 +788,7 @@ import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '../context/AuthContext';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000' || 'https://jewelly-store-mern-app-production.up.railway.app/';
 
 function Users() {
   const [users, setUsers] = useState([]);

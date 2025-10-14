@@ -39,6 +39,7 @@ const allowedOrigins = [
   process.env.ADMIN_URL || "http://localhost:3001",
   "https://luxury-jewelly-frontend.vercel.app/",
   "https://luxury-jewellery-admin-dashboard.vercel.app/",
+  "https://jewelly-store-mern-app-production.up.railway.app/",
 ];
 
 app.use(
