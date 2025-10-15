@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base URL from environment variables
 const api = axios.create({
-  baseURL: process.env.ADMIN_APP_API_URL || 'https://jewelly-store-mern-app-production.up.railway.app/',
+  baseURL: process.env.ADMIN_APP_API_URL || 'https://jewelly-store-mern-app-production.up.railway.app',
   timeout: 10000,
 });
 
