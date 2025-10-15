@@ -56,23 +56,23 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-        {/* Logo */}
-<Link to="/" className="flex items-center space-x-3 group">
-  <div className="relative">
-    <div className="w-12 h-12 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-all duration-300">
-      <span className="text-white font-bold text-xl">💎</span>
-    </div>
-    <div className="absolute -inset-1 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
-  </div>
-  <div className="block"> {/* Changed from hidden sm:block to block */}
-    <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 text-transparent bg-clip-text">
-      LuxuryJewelry
-    </h1>
-    <p className="text-xs text-gray-500 font-medium hidden sm:block"> {/* Hide tagline on mobile */}
-      Crafted Elegance
-    </p>
-  </div>
-</Link> 
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-all duration-300">
+                <span className="text-white font-bold text-xl">💎</span>
+              </div>
+              <div className="absolute -inset-1 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
+            </div>
+            <div className="block">
+              {" "}
+              {/* Changed from hidden sm:block to block */}
+              <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 text-transparent bg-clip-text">
+                LuxuryJewelry
+              </h1>
+              <p className="text-xs text-gray-500 sm:block">Crafted Elegance</p>
+            </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
