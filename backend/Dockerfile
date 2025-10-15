@@ -1,4 +1,30 @@
-FROM node:18-alpine
+# Development stage
+FROM node:18-alpine as development
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm install
+
+# Install nodemon globally for hot reload
+RUN npm install -g nodemon
+
+# Copy source code
+COPY . .
+
+# Create uploads directory
+RUN mkdir -p uploads
+
+EXPOSE 5000
+
+# Use nodemon for development with hot reload
+CMD ["nodemon", "server.js"]
+
+# Production stage
+FROM node:18-alpine as production
 
 WORKDIR /app
 

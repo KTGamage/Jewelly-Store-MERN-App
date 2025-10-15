@@ -15,7 +15,9 @@ services:
       - jewellery-network
 
   backend:
-    build: ./backend
+    build: 
+      context: ./backend
+      target: development 
     container_name: jewellery_backend
     restart: unless-stopped
     environment:
@@ -38,31 +40,49 @@ services:
     depends_on:
       - mongodb
     volumes:
+      - ./backend:/app
+      - /app/node_modules
       - backend_uploads:/app/uploads
     networks:
       - jewellery-network
+    command: npm run dev
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      target: development 
     container_name: jewellery_frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
+    environment:
+      - REACT_APP_API=http://localhost:5000
+      - CHOKIDAR_USEPOLLING=true  
     depends_on:
       - backend
     networks:
       - jewellery-network
+    command: npm start
 
   admin-dashboard:
-    build: ./admin-dashboard
+    build: 
+      context: ./admin-dashboard
+      target: development 
     container_name: jewellery_admin_dashboard
     restart: unless-stopped
     ports:
       - "3001:3001"
+    environment:
+      - REACT_APP_API=http://localhost:5000
+      - CHOKIDAR_USEPOLLING=true  # Enable file watching in Docker
     depends_on:
       - backend
+    volumes:
+      - ./admin-dashboard:/app 
+      - /app/node_modules 
     networks:
       - jewellery-network
+    command: npm start
 
 volumes:
   mongodb_data:
