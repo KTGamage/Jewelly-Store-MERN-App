@@ -13,6 +13,14 @@ dotenv.config();
 
 const app = express();
 
+
+// Middleware
+app.use(cors({
+  origin: [process.env.CLIENT_URL, process.env.ADMIN_URL],
+  credentials: true
+}));
+app.use(express.json());
+
 // Session configuration
 app.use(
   session({
@@ -146,6 +154,8 @@ app.get("/api/test-openai", async (req, res) => {
 });
 
 // Routes
+app.use('/api/contact', require('./routes/contact'));
+app.use('/api/newsletter', require('./routes/newsletter'));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/products", require("./routes/products"));
 app.use("/api/orders", require("./routes/orders"));
@@ -216,6 +226,9 @@ app.use("/api/*", (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 // Only start server if not in test mode
 if (process.env.NODE_ENV !== "test") {

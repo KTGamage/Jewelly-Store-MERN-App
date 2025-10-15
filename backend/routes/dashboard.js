@@ -3,7 +3,7 @@ const router = express.Router();
 const Order = require('../models/Order');
 const User = require('../models/User');
 const Product = require('../models/Product');
-const { auth, admin } = require('../middleware/auth'); // Use your existing auth middleware
+const { auth, admin } = require('../middleware/auth'); 
 
 // Get dashboard statistics
 router.get('/stats', auth, admin, async (req, res) => {

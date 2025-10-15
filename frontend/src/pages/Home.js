@@ -1,6 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+
+// Social Media Icons (You can replace these with actual image URLs)
+const SocialIcons = {
+  facebook: (
+    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+    </svg>
+  ),
+  instagram: (
+    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987c6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.22 14.815 3.73 13.664 3.73 12.367s.49-2.448 1.396-3.323c.875-.808 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.906.875 1.396 2.026 1.396 3.323s-.49 2.448-1.396 3.323c-.875.808-2.026 1.297-3.323 1.297z"/>
+    </svg>
+  ),
+  twitter: (
+    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+    </svg>
+  ),
+  youtube: (
+    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+    </svg>
+  )
+};
+
+// Category images 
+const categoryImages = {
+  rings: "/images/categories/rings.jpg",
+  necklaces: "/images/categories/necklaces.jpg",
+  earrings: "/images/categories/earrings.jpg",
+  bracelets: "/images/categories/bracelets.jpg"
+};
 
 function Home() {
   const [products, setProducts] = useState([]);
@@ -11,131 +44,89 @@ function Home() {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
   const [featuredCategories, setFeaturedCategories] = useState([
     {
       name: "Rings",
-      image: "💍",
+      image: categoryImages.rings,
       count: "120+ Items",
       gradient: "from-pink-400 to-rose-600",
       value: "rings",
     },
     {
       name: "Necklaces",
-      image: "📿",
+      image: categoryImages.necklaces,
       count: "85+ Items",
       gradient: "from-purple-400 to-indigo-600",
       value: "necklaces",
     },
     {
       name: "Earrings",
-      image: "👂",
+      image: categoryImages.earrings,
       count: "65+ Items",
       gradient: "from-blue-400 to-cyan-600",
       value: "earrings",
     },
     {
       name: "Bracelets",
-      image: "📿",
+      image: categoryImages.bracelets,
       count: "45+ Items",
       gradient: "from-emerald-400 to-teal-600",
       value: "bracelets",
     },
   ]);
 
+  const API_BASE = process.env.REACT_APP_API || "/api";
+
   useEffect(() => {
     const fetchCategoryCounts = async () => {
       try {
-        const response = await axios.get("/api/products/category-counts");
-        setFeaturedCategories([
-          {
-            name: "Rings",
-            image: "💍",
-            count: `${response.data.rings}+ Items`,
-            gradient: "from-pink-400 to-rose-600",
-            value: "rings",
-          },
-          {
-            name: "Necklaces",
-            image: "📿",
-            count: `${response.data.necklaces}+ Items`,
-            gradient: "from-purple-400 to-indigo-600",
-            value: "necklaces",
-          },
-          {
-            name: "Earrings",
-            image: "👂",
-            count: `${response.data.earrings}+ Items`,
-            gradient: "from-blue-400 to-cyan-600",
-            value: "earrings",
-          },
-          {
-            name: "Bracelets",
-            image: "📿",
-            count: `${response.data.bracelets}+ Items`,
-            gradient: "from-emerald-400 to-teal-600",
-            value: "bracelets",
-          },
-        ]);
+        const response = await axios.get(`${API_BASE}/products/category-counts`);
+        setFeaturedCategories(prev => prev.map(cat => ({
+          ...cat,
+          count: `${response.data[cat.value] || 0}+ Items`
+        })));
       } catch (error) {
         console.error("Error fetching category counts:", error);
-        // If API fails, set default counts
-        setFeaturedCategories((prev) =>
-          prev.map((cat) => ({
-            ...cat,
-            count: "0+ Items",
-          }))
-        );
+        toast.error("Failed to load category counts");
       }
     };
 
     fetchCategoryCounts();
-  }, []);
+  }, [API_BASE]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/api/products?limit=8&featured=true");
+        const response = await axios.get(`${API_BASE}/products?limit=8&featured=true`);
         setProducts(response.data.products);
       } catch (error) {
         console.error("Error fetching products:", error);
         setProducts([]);
+        toast.error("Failed to load featured products");
       } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
-  }, []);
-
-  // const handleContactSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     await axios.post("/api/contact", contactForm);
-  //     setContactForm({ name: "", email: "", message: "" });
-  //     alert("Thank you for your message! We'll get back to you soon.");
-  //   } catch (error) {
-  //     console.error("Error sending message:", error);
-  //     alert("Failed to send message. Please try again.");
-  //   }
-  // };
+  }, [API_BASE]);
 
   const handleContactSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post("/api/contact", contactForm);
+      const response = await axios.post(`${API_BASE}/contact`, contactForm);
       setContactForm({ name: "", email: "", message: "" });
-      alert(
-        response.data.message ||
-          "Thank you for your message! We'll get back to you soon."
-      );
+      toast.success(response.data.message || "Thank you for your message! We'll get back to you soon.");
     } catch (error) {
       console.error("Error sending message:", error);
-      if (error.response && error.response.data.message) {
-        alert(error.response.data.message);
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
       } else {
-        alert("Failed to send message. Please try again.");
+        toast.error("Failed to send message. Please try again.");
       }
     } finally {
       setIsSubmitting(false);
@@ -147,6 +138,32 @@ function Home() {
       ...contactForm,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    if (!newsletterEmail) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    setIsSubscribing(true);
+    try {
+      const response = await axios.post(`${API_BASE}/newsletter/subscribe`, {
+        email: newsletterEmail,
+      });
+      setNewsletterEmail("");
+      toast.success(response.data.message || "Thank you for subscribing to our newsletter!");
+    } catch (error) {
+      console.error("Error subscribing to newsletter:", error);
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Failed to subscribe. Please try again.");
+      }
+    } finally {
+      setIsSubscribing(false);
+    }
   };
 
   if (loading) {
@@ -162,6 +179,8 @@ function Home() {
 
   return (
     <div className="min-h-screen">
+      <Toaster position="top-right" />
+      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-purple-900 via-blue-800 to-indigo-900 text-white py-24 px-4 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
@@ -201,8 +220,8 @@ function Home() {
         </div>
       </section>
 
-      {/* Featured Categories */}
-      <section className="py-15 mt-10 px-4 bg-gradient-to-b from-gray-50 to-white">
+      {/* Featured Categories - Updated Design */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-5 px-2 py-2 bg-gradient-to-r from-gray-900 to-gray-600 text-transparent bg-clip-text">
@@ -211,24 +230,57 @@ function Home() {
             <div className="w-24 h-1 bg-gradient-to-r from-purple-400 to-blue-400 mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {featuredCategories.map((category, index) => (
               <Link
                 key={index}
                 to={`/products?category=${category.value}`}
-                className="group relative bg-white rounded-2xl shadow-xl p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 overflow-hidden"
+                className="group relative bg-white rounded-3xl shadow-2xl p-6 text-center hover:shadow-3xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-3 overflow-hidden border border-gray-100"
               >
+                {/* Background Gradient */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}
+                  className={`absolute inset-0 bg-gradient-to-br ${category.gradient} opacity-5 group-hover:opacity-10 transition-opacity duration-500`}
                 ></div>
+                
+                {/* Shine Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                
                 <div className="relative z-10">
-                  <div className="text-5xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                    {category.image}
+                  {/* Image Container */}
+                  <div className="relative mb-6">
+                    <div className="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-4 shadow-inner overflow-hidden">
+                      <img
+                        src={category.image}
+                        alt={category.name}
+                        className="w-full h-full object-cover rounded-xl group-hover:scale-110 transition-transform duration-500"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                      <div className="w-full h-full flex items-center justify-center text-3xl hidden">
+                        {category.name === "Rings" && "💍"}
+                        {category.name === "Necklaces" && "📿"}
+                        {category.name === "Earrings" && "👂"}
+                        {category.name === "Bracelets" && "📿"}
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-2">
+                  
+                  {/* Content */}
+                  <h3 className="font-bold text-xl text-gray-900 mb-2 group-hover:text-gray-800 transition-colors">
                     {category.name}
                   </h3>
-                  <p className="text-gray-600 font-medium">{category.count}</p>
+                  <p className="text-gray-600 font-medium bg-gray-50 px-3 py-1 rounded-full inline-block group-hover:bg-gray-100 transition-colors">
+                    {category.count}
+                  </p>
+                  
+                  {/* Explore Button */}
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                    <span className="text-sm font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
+                      Explore →
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))}
@@ -319,7 +371,7 @@ function Home() {
         </div>
       </section>
 
-      {/* Features Section - Modern design */}
+      {/* Features Section */}
       <section className="py-20 px-4 bg-gradient-to-br from-purple-50 to-blue-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -478,7 +530,7 @@ function Home() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition duration-300 transform hover:scale-105"
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-bold hover:shadow-lg transition duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isSubmitting ? (
                     <div className="flex items-center justify-center">
@@ -512,28 +564,28 @@ function Home() {
               </p>
               <div className="flex space-x-4">
                 <a
-                  href="#"
-                  className="bg-purple-600 hover:bg-purple-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"
+                  href="https://facebook.com"
+                  className="bg-blue-600 hover:bg-blue-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300 transform hover:scale-110"
                 >
-                  📘
+                  {SocialIcons.facebook}
                 </a>
                 <a
-                  href="#"
-                  className="bg-pink-600 hover:bg-pink-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"
+                  href="https://instagram.com"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300 transform hover:scale-110"
                 >
-                  📷
+                  {SocialIcons.instagram}
                 </a>
                 <a
-                  href="#"
-                  className="bg-blue-600 hover:bg-blue-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"
+                  href="https://twitter.com"
+                  className="bg-sky-500 hover:bg-sky-600 w-10 h-10 rounded-full flex items-center justify-center transition duration-300 transform hover:scale-110"
                 >
-                  🐦
+                  {SocialIcons.twitter}
                 </a>
                 <a
-                  href="#"
-                  className="bg-red-600 hover:bg-red-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300"
+                  href="https://youtube.com"
+                  className="bg-red-600 hover:bg-red-700 w-10 h-10 rounded-full flex items-center justify-center transition duration-300 transform hover:scale-110"
                 >
-                  📺
+                  {SocialIcons.youtube}
                 </a>
               </div>
             </div>
@@ -642,16 +694,23 @@ function Home() {
                   Subscribe to get special offers and exclusive updates
                 </p>
               </div>
-              <div className="flex w-full md:w-auto">
+              <form onSubmit={handleNewsletterSubmit} className="flex w-full md:w-auto">
                 <input
                   type="email"
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
                   placeholder="Enter your email"
                   className="flex-1 md:w-64 px-4 py-3 rounded-l-xl bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  required
                 />
-                <button className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-3 rounded-r-xl font-semibold hover:shadow-lg transition duration-300">
-                  Subscribe
+                <button 
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-3 rounded-r-xl font-semibold hover:shadow-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubscribing ? "Subscribing..." : "Subscribe"}
                 </button>
-              </div>
+              </form>
             </div>
           </div>
 
