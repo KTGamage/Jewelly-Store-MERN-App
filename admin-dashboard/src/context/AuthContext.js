@@ -116,7 +116,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000' || 'https://jewelly-store-mern-app-production.up.railway.app/';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://jewelly-store-mern-app-production.up.railway.app/';
 
 const AuthContext = createContext();
 
