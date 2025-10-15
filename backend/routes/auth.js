@@ -15,7 +15,7 @@ const generateToken = (id) => {
 // Simple admin user creation without async issues
 const ensureAdminUser = async () => {
   try {
-    const adminUser = await User.findOne({ email: 'admin@jewellery.com' });
+    const adminUser = await User.findOne({ email: 'admin@jewellery.com', role: 'admin' });
     
     if (!adminUser) {
       console.log('Creating admin user...');

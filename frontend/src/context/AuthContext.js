@@ -76,7 +76,7 @@ export function AuthProvider({ children }) {
 
   const googleSignIn = () => {
     // Redirect to backend Google OAuth endpoint
-    window.location.href = `${API_BASE_URL}/api/auth/google`;
+    window.location.href = `${API_BASE_URL}api/auth/google`;
   };
 
   const handleOAuthCallback = (token, userData) => {
