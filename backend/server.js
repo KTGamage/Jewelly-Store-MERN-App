@@ -40,8 +40,6 @@ const allowedOrigins = [
   "https://luxury-jewelly-frontend.vercel.app",
   "https://luxury-jewellery-admin-dashboard.vercel.app",
   "https://jewelly-store-mern-app-production.up.railway.app",
-  "https://*.vercel.app",                         
-  "https://*.railway.app",  
 ];
 
 app.use(
