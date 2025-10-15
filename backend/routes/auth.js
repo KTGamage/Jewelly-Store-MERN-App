@@ -158,7 +158,7 @@ router.post(
   }
 );
 
-// Google OAuth Routes - WITH PROPER ERROR HANDLING
+// Google OAuth Routes
 router.get(
   "/google",
   (req, res, next) => {
@@ -210,6 +210,23 @@ router.get(
     }
   }
 );
+
+
+
+// Add this route to check Google OAuth configuration
+router.get("/debug-oauth", (req, res) => {
+  const config = {
+    googleClientId: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'MISSING',
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'MISSING', 
+    clientUrl: process.env.CLIENT_URL || 'MISSING',
+    callbackUrl: process.env.CLIENT_URL ? `${process.env.CLIENT_URL}/api/auth/google/callback` : 'MISSING',
+    nodeEnv: process.env.NODE_ENV
+  };
+  
+  console.log('🔐 Debug OAuth Config:', config);
+  
+  res.json(config);
+});
 
 // Get current user
 router.get("/me", async (req, res) => {
