@@ -29,10 +29,10 @@ const SocialIcons = {
 
 // Category images 
 const categoryImages = {
-  rings: "/images/categories/rings.jpg",
-  necklaces: "/images/categories/necklaces.jpg",
+  rings: "/images/categories/rings.png",
+  necklaces: "/images/categories/necklaces.png",
   earrings: "/images/categories/earrings.jpg",
-  bracelets: "/images/categories/bracelets.jpg"
+  bracelets: "/images/categories/bracelets.png"
 };
 
 function Home() {
@@ -248,7 +248,7 @@ function Home() {
                 <div className="relative z-10">
                   {/* Image Container */}
                   <div className="relative mb-6">
-                    <div className="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-4 shadow-inner overflow-hidden">
+                    <div className="w-35 h-35 mx-auto rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 p-4 shadow-inner overflow-hidden">
                       <img
                         src={category.image}
                         alt={category.name}
@@ -285,6 +285,8 @@ function Home() {
               </Link>
             ))}
           </div>
+
+          
         </div>
       </section>
 
