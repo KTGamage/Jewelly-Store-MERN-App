@@ -285,8 +285,6 @@ function Home() {
               </Link>
             ))}
           </div>
-
-          
         </div>
       </section>
 

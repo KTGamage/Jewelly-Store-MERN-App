@@ -21,7 +21,7 @@ services:
     container_name: jewellery_backend
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - PORT=5000
       - MONGODB_URI=${MONGODB_URI}
       - JWT_SECRET=${JWT_SECRET}
@@ -60,6 +60,9 @@ services:
       - CHOKIDAR_USEPOLLING=true  
     depends_on:
       - backend
+    volumes:
+      - ./frontend:/app 
+      - /app/node_modules  
     networks:
       - jewellery-network
     command: npm start
