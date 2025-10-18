@@ -1,4 +1,4 @@
-# LuxuryJewellery - Luxury Jewellery E-Commerce Platform
+# 💎📿LuxuryJewellery - Luxury Jewellery E-Commerce Platform
 
 ![MERN Stack](https://img.shields.io/badge/MERN-Stack-brightgreen)
 ![React](https://img.shields.io/badge/React-18.2.0-blue)
@@ -72,29 +72,130 @@ A sophisticated full-stack e-commerce platform specializing in luxury jewellery,
 ## 📁 Project Structure
 
 ```
-luxuryjewellery-app/
-├── backend/
-│   ├── config/          # Database and third-party configurations
-│   ├── controllers/     # Route controllers
-│   ├── middleware/      # Custom middleware (auth, validation)
-│   ├── models/          # MongoDB schemas and models
-│   ├── routes/          # API route definitions
-│   └── server.js        # Express server entry point
-├── frontend/
-│   ├── public/          # Static assets
-│   └── src/
-│       ├── components/  # Reusable React components
-│       ├── pages/       # Page-level components
-│       ├── context/     # React context for state management
-│       ├── hooks/       # Custom React hooks
-│       ├── utils/       # Utility functions and API configuration
-│       └── styles/      # Tailwind CSS and custom styles
-├── admin-dashboard/
-│   └── src/             # Admin React application
-├── scripts/
-│   ├── load-env.js      # Environment configuration loader
-│   └── ensure-indexes.js # Database index management
-└── package.json         # Root package configuration
+Jewellery-app/
+│  
+├── admin-dashboard
+│   │   .dockerignore
+│   │   .env
+│   │   .gitignore
+│   │   Dockerfile
+│   │   package-lock.json
+│   │   package.json
+│   │   postcss.config.js
+│   ├── public
+│   │   │   index.html
+│   │   │   manifest.json
+│   ├── scripts
+│   │   │   dev-admin.js
+│   ├── src
+│   │   │   App.js
+│   │   ├── components
+│   │   │   │   Layout.js
+│   │   │   │   Sidebar.js
+│   │   ├── context
+│   │   │   │   AuthContext.js
+│   │   │   index.css
+│   │   │   index.js
+│   │   ├── pages
+│   │   │   │   Dashboard.js
+│   │   │   │   Login.js
+│   │   │   │   Orders.js
+│   │   │   │   Products.js
+│   │   │   │   Users.js
+│   │   ├── utils
+│   │   │   │   api.js
+│   │   tailwind.config.js
+├── backend
+│   │   .dockerignore
+│   │   .env
+│   ├── config
+│   │   │   passport.js
+│   ├── controllers
+│   │   Dockerfile
+│   │   init-mongo.js
+│   ├── middleware
+│   │   │   auth.js
+│   ├── models
+│   │   │   Cart.js
+│   │   │   Order.js
+│   │   │   Product.js
+│   │   │   User.js
+│   │   package-lock.json
+│   │   package.json
+│   │   render.yaml
+│   ├── routes
+│   │   │   admin.js
+│   │   │   auth.js
+│   │   │   cart.js
+│   │   │   chatbot.js
+│   │   │   contact.js
+│   │   │   dashboard.js
+│   │   │   newsletter.js
+│   │   │   orders.js
+│   │   │   products.js
+│   │   │   upload.js
+│   │   │   users.js
+│   ├── scripts
+│   │   │   setup.js
+│   │   server.js
+│   │   test-admin.js
+│   ├── uploads 
+│   ├── utils
+│   docker-compose.yml
+├── frontend
+│   │   .dockerignore
+│   │   .env
+│   │   .gitignore
+│   │   Dockerfile
+│   │   package-lock.json
+│   │   package.json
+│   │   postcss.config.js
+│   ├── public
+│   │   ├── images
+│   │   │   ├── categories
+│   │   │   │   │   bracelets.png
+│   │   │   │   │   earrings.jpg
+│   │   │   │   │   necklaces.png
+│   │   │   │   │   rings.png
+│   │   │   index.html
+│   │   │   manifest.json
+│   ├── scripts
+│   │   │   dev-frontend.js
+│   ├── src
+│   │   │   App.js
+│   │   ├── components
+│   │   │   │   Chatbot.js
+│   │   │   │   GoogleLogin.js
+│   │   │   │   Navbar.js
+│   │   │   │   OAuthSuccess.js
+│   │   │   │   ProductCard.js
+│   │   │   │   ProtectedRoute.js
+│   │   ├── context
+│   │   │   │   AuthContext.js
+│   │   │   │   CartContext.js
+│   │   ├── hooks
+│   │   │   index.css
+│   │   │   index.js
+│   │   ├── pages
+│   │   │   │   Cart.js
+│   │   │   │   Home.js
+│   │   │   │   Login.js
+│   │   │   │   OrderHistory.js
+│   │   │   │   OrderSuccess.js
+│   │   │   │   ProductDetail.js
+│   │   │   │   Products.js
+│   │   │   │   Register.js
+│   │   ├── utils
+│   │   │   │   api.js
+│   │   tailwind.config.js
+│   generate-structure.js
+│   package-lock.json
+│   package.json
+├── scripts
+│   │   ensureIndexes.js
+│   │   load-env.js
+│   structure.txt
+
 ```
 
 ## 🚀 Installation
@@ -109,8 +210,10 @@ luxuryjewellery-app/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/luxuryjewellery-app.git
-   cd luxuryjewellery-app
+   git clone https://github.com/KTGamage/Jewelly-Store-MERN-App.git
+   cd Jewelly-Store-MERN-App
+
+
    ```
 
 2. **Install dependencies**
@@ -154,7 +257,7 @@ MONGODB_URI=your_mongodb_atlas_connection_string
 JWT_SECRET=your_jwt_secret_key
 GOOGLE_CLIENT_ID=your_google_oauth_client_id
 GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
-OPENAI_API_KEY=your_openai_api_key
+GEMINI_API_KEY=your_gemini_api_key
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
@@ -208,8 +311,8 @@ npm start
 ```
 
 ### Deployment Platforms
-- **Frontend**: Vercel, Netlify, or AWS S3
-- **Backend**: Heroku, AWS EC2, or DigitalOcean
+- **Frontend,admin-dashboard**: Vercel
+- **Backend**: Railway
 - **Database**: MongoDB Atlas
 - **File Storage**: Cloudinary
 
