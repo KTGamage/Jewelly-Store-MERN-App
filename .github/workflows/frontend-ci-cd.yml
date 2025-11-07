@@ -33,7 +33,7 @@ jobs:
         cache-dependency-path: frontend/package-lock.json
 
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           frontend/node_modules
@@ -70,7 +70,7 @@ jobs:
         GENERATE_SOURCEMAP: false
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: frontend-build
         path: frontend/build/
@@ -86,7 +86,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Download build artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: frontend-build
         path: frontend/build
@@ -96,12 +96,9 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
 
-    - name: Install Vercel CLI
-      run: npm install --global vercel@latest
-
     - name: Deploy to Vercel Preview
       run: |
-        vercel --token ${{ secrets.VERCEL_TOKEN }} --yes --confirm
+        npx vercel --token ${{ secrets.VERCEL_TOKEN }} --yes --confirm
       env:
         VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
@@ -116,7 +113,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Download build artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: frontend-build
         path: frontend/build
@@ -126,12 +123,9 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
 
-    - name: Install Vercel CLI
-      run: npm install --global vercel@latest
-
     - name: Deploy to Vercel Production
       run: |
-        vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --yes --confirm
+        npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }} --yes --confirm
       env:
         VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
