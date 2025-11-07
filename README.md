@@ -63,6 +63,8 @@ A sophisticated full-stack e-commerce platform specializing in luxury jewellery,
 - **Passport.js** - Authentication middleware
 - **bcryptjs** - Password hashing
 - **Cloudinary** - Image and media management
+- **GitHub Actions** - CI/CD pipline
+
 
 ### Additional Services
 - **Google OAuth 2.0** - Social authentication
