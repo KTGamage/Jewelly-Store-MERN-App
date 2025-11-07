@@ -90,6 +90,6 @@ jobs:
       run: |
         cd backend
         npm install -g @railway/cli
-        railway up --service backend
+        railway up --service Jewelly-Store-MERN-App
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
