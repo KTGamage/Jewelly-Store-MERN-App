@@ -1,14 +1,68 @@
-name: Backend Simple Deploy
+name: Backend CI/CD
 
 on:
   push:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+      - 'scripts/**'
+      - '.github/workflows/backend-ci-cd.yml'
+  pull_request:
     branches: [ main ]
     paths:
       - 'backend/**'
 
+env:
+  NODE_VERSION: '18.x'
+
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
+
+    - name: Cache node modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          backend/node_modules
+          backend/.npm
+        key: ${{ runner.os }}-backend-node-${{ hashFiles('backend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-backend-node-
+
+    - name: Install dependencies
+      run: |
+        cd backend
+        npm ci --no-audit --fund false --prefer-offline
+      shell: bash
+
+    - name: Run security audit
+      run: |
+        cd backend
+        npm audit --audit-level high
+      shell: bash
+
+    - name: Run tests
+      run: |
+        cd backend
+        npm test -- --passWithNoTests --silent
+      shell: bash
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     
     steps:
     - name: Checkout code
@@ -17,14 +71,14 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: ${{ env.NODE_VERSION }}
 
     - name: Install Railway CLI
       run: npm install -g @railway/cli
 
-    - name: Deploy Backend
+    - name: Deploy to Railway
       run: |
         cd backend
-        railway up
+        railway up --detach
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
