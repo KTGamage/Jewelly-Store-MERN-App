@@ -6,43 +6,58 @@ on:
     paths:
       - 'backend/**'
       - 'scripts/**'
-      - '.env.example'
       - '.github/workflows/backend-ci-cd.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'backend/**'
 
+env:
+  NODE_VERSION: '18.x'
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Node.js ${{ matrix.node-version }}
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         cache-dependency-path: backend/package-lock.json
 
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          backend/node_modules
+          backend/.npm
+        key: ${{ runner.os }}-backend-node-${{ hashFiles('backend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-backend-node-
+
     - name: Install dependencies
-      run: npm install
-      working-directory: backend
+      run: |
+        cd backend
+        npm ci --no-audit --fund false --prefer-offline
+      shell: bash
 
     - name: Run security audit
-      run: npm audit --audit-level moderate
-      working-directory: backend
+      run: |
+        cd backend
+        npm audit --audit-level high
+      shell: bash
 
-    - name: Run tests (if available)
-      run: npm test -- --passWithNoTests
-      working-directory: backend
+    - name: Run tests
+      run: |
+        cd backend
+        npm test -- --passWithNoTests --silent
+      shell: bash
 
   deploy:
     needs: test
@@ -56,13 +71,15 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         cache-dependency-path: backend/package-lock.json
 
-    - name: Install dependencies
-      run: npm install --production
-      working-directory: backend
+    - name: Install production dependencies
+      run: |
+        cd backend
+        npm ci --production --no-audit --fund false
+      shell: bash
 
     - name: Deploy to Railway
       uses: railway-org/railway-action@v1.1.0
@@ -70,11 +87,3 @@ jobs:
         service: backend
         token: ${{ secrets.RAILWAY_TOKEN }}
         environment: production
-
-    - name: Setup Environment Variables
-      run: node scripts/setup-env-ci.js
-      env:
-        MONGODB_URI: ${{ secrets.MONGODB_URI }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
-        ADMIN_APP_API_URL: ${{ vars.ADMIN_APP_API_URL }}
