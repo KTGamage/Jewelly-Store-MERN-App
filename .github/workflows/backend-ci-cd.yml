@@ -32,7 +32,7 @@ jobs:
         cache-dependency-path: backend/package-lock.json
 
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           backend/node_modules
@@ -59,6 +59,13 @@ jobs:
         npm test -- --passWithNoTests --silent
       shell: bash
 
+    - name: Upload backend code for deployment
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-code
+        path: backend/
+        retention-days: 1
+
   deploy:
     needs: test
     runs-on: ubuntu-latest
@@ -68,22 +75,21 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Download backend code
+      uses: actions/download-artifact@v4
+      with:
+        name: backend-code
+        path: backend
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        cache-dependency-path: backend/package-lock.json
 
-    - name: Install production dependencies
+    - name: Deploy to Railway using CLI
       run: |
         cd backend
-        npm ci --production --no-audit --fund false
-      shell: bash
-
-    - name: Deploy to Railway
-      uses: railway-org/railway-action@v1.1.0
-      with:
-        service: backend
-        token: ${{ secrets.RAILWAY_TOKEN }}
-        environment: production
+        npm install -g @railway/cli
+        railway up --service backend
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
