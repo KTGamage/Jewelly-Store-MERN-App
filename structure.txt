@@ -1,0 +1,184 @@
+│   .dockerignore
+│   .env
+│   .env.production
+│   .gitattributes
+│   .gitignore
+├── admin-dashboard
+│   │   .dockerignore
+│   │   .env
+│   │   .gitignore
+│   │   Dockerfile
+│   │   package-lock.json
+│   │   package.json
+│   │   postcss.config.js
+│   ├── public
+│   │   │   index.html
+│   │   │   manifest.json
+│   ├── scripts
+│   │   │   dev-admin.js
+│   ├── src
+│   │   │   App.js
+│   │   ├── components
+│   │   │   │   Layout.js
+│   │   │   │   Sidebar.js
+│   │   ├── context
+│   │   │   │   AuthContext.js
+│   │   │   index.css
+│   │   │   index.js
+│   │   ├── pages
+│   │   │   │   Dashboard.js
+│   │   │   │   Login.js
+│   │   │   │   Orders.js
+│   │   │   │   Products.js
+│   │   │   │   Users.js
+│   │   ├── utils
+│   │   │   │   api.js
+│   │   tailwind.config.js
+├── backend
+│   │   .dockerignore
+│   │   .env
+│   ├── config
+│   │   │   passport.js
+│   ├── controllers
+│   │   Dockerfile
+│   │   init-mongo.js
+│   ├── middleware
+│   │   │   auth.js
+│   ├── models
+│   │   │   Cart.js
+│   │   │   Order.js
+│   │   │   Product.js
+│   │   │   User.js
+│   │   package-lock.json
+│   │   package.json
+│   │   render.yaml
+│   ├── routes
+│   │   │   admin.js
+│   │   │   auth.js
+│   │   │   cart.js
+│   │   │   chatbot.js
+│   │   │   contact.js
+│   │   │   dashboard.js
+│   │   │   newsletter.js
+│   │   │   orders.js
+│   │   │   products.js
+│   │   │   upload.js
+│   │   │   users.js
+│   ├── scripts
+│   │   │   setup.js
+│   │   server.js
+│   │   test-admin.js
+│   ├── uploads
+│   │   │   images-1758805793766-435036669.jpg
+│   │   │   images-1758809539245-963951399.jpg
+│   │   │   images-1758809542579-323121882.jpg
+│   │   │   images-1758809543658-428550814.jpg
+│   │   │   images-1758809544495-395211619.jpg
+│   │   │   images-1758809545134-451519189.jpg
+│   │   │   images-1758809545357-608890718.jpg
+│   │   │   images-1758809545549-792744414.jpg
+│   │   │   images-1758809545713-13978162.jpg
+│   │   │   images-1758809545957-999784495.jpg
+│   │   │   images-1758809546130-519141134.jpg
+│   │   │   images-1758809546342-824394900.jpg
+│   │   │   images-1758809546535-599056102.jpg
+│   │   │   images-1758809546707-871831844.jpg
+│   │   │   images-1758809546924-335191259.jpg
+│   │   │   images-1758809547505-413279401.jpg
+│   │   │   images-1758809547868-335151126.jpg
+│   │   │   images-1758809548061-532825077.jpg
+│   │   │   images-1758809548448-839701896.jpg
+│   │   │   images-1758809548645-892022935.jpg
+│   │   │   images-1758809549028-382403055.jpg
+│   │   │   images-1758809549465-794856108.jpg
+│   │   │   images-1758809549807-272338383.jpg
+│   │   │   images-1758809550209-966526923.jpg
+│   │   │   images-1758809551374-796310481.jpg
+│   │   │   images-1758809551562-171928.jpg
+│   │   │   images-1758809551780-123758653.jpg
+│   │   │   images-1758809552190-723375994.jpg
+│   │   │   images-1758809552383-497201663.jpg
+│   │   │   images-1758809552609-481234996.jpg
+│   │   │   images-1758809552797-104292884.jpg
+│   │   │   images-1758809553012-627875537.jpg
+│   │   │   images-1758809553234-707308657.jpg
+│   │   │   images-1758809553447-766155221.jpg
+│   │   │   images-1758809553643-669656974.jpg
+│   │   │   images-1758809554107-774371822.jpg
+│   │   │   images-1758809554540-74505626.jpg
+│   │   │   images-1758809554753-49033743.jpg
+│   │   │   images-1758809555218-641616074.jpg
+│   │   │   images-1758809555457-30823670.jpg
+│   │   │   images-1758809555650-952408470.jpg
+│   │   │   images-1758809555912-921220675.jpg
+│   │   │   images-1758809556326-49062023.jpg
+│   │   │   images-1758809556569-814183261.jpg
+│   │   │   images-1758809556762-54054596.jpg
+│   │   │   images-1758809557025-314241952.jpg
+│   │   │   images-1758809557195-826738662.jpg
+│   │   │   images-1758809557442-565634379.jpg
+│   │   │   images-1758809557630-737665772.jpg
+│   │   │   images-1758809557828-473346631.jpg
+│   │   │   images-1758809557971-196999784.jpg
+│   │   │   images-1758809558259-525835848.jpg
+│   │   │   images-1758809558455-462483020.jpg
+│   │   │   images-1758809558882-855024477.jpg
+│   │   │   images-1758809559075-67838400.jpg
+│   │   │   images-1758809559269-950252679.jpg
+│   │   │   images-1758809559415-757128136.jpg
+│   │   │   images-1758809559620-254838640.jpg
+│   ├── utils
+│   docker-compose.yml
+├── frontend
+│   │   .dockerignore
+│   │   .env
+│   │   .gitignore
+│   │   Dockerfile
+│   │   package-lock.json
+│   │   package.json
+│   │   postcss.config.js
+│   ├── public
+│   │   ├── images
+│   │   │   ├── categories
+│   │   │   │   │   bracelets.png
+│   │   │   │   │   earrings.jpg
+│   │   │   │   │   necklaces.png
+│   │   │   │   │   rings.png
+│   │   │   index.html
+│   │   │   manifest.json
+│   ├── scripts
+│   │   │   dev-frontend.js
+│   ├── src
+│   │   │   App.js
+│   │   ├── components
+│   │   │   │   Chatbot.js
+│   │   │   │   GoogleLogin.js
+│   │   │   │   Navbar.js
+│   │   │   │   OAuthSuccess.js
+│   │   │   │   ProductCard.js
+│   │   │   │   ProtectedRoute.js
+│   │   ├── context
+│   │   │   │   AuthContext.js
+│   │   │   │   CartContext.js
+│   │   ├── hooks
+│   │   │   index.css
+│   │   │   index.js
+│   │   ├── pages
+│   │   │   │   Cart.js
+│   │   │   │   Home.js
+│   │   │   │   Login.js
+│   │   │   │   OrderHistory.js
+│   │   │   │   OrderSuccess.js
+│   │   │   │   ProductDetail.js
+│   │   │   │   Products.js
+│   │   │   │   Register.js
+│   │   ├── utils
+│   │   │   │   api.js
+│   │   tailwind.config.js
+│   generate-structure.js
+│   package-lock.json
+│   package.json
+├── scripts
+│   │   ensureIndexes.js
+│   │   load-env.js
+│   structure.txt
