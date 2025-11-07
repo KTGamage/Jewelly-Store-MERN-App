@@ -76,9 +76,16 @@ jobs:
     - name: Install Railway CLI
       run: npm install -g @railway/cli
 
+    - name: Link to Railway Project
+      run: |
+        cd backend
+        railway link athletic-sparkle
+      env:
+        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
     - name: Deploy to Railway
       run: |
         cd backend
-        railway up --detach
+        railway up --service "Jewelly-Store-MERN-App" --detach
       env:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
