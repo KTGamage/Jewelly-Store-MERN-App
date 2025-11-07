@@ -70,3 +70,11 @@ jobs:
         service: backend
         token: ${{ secrets.RAILWAY_TOKEN }}
         environment: production
+
+    - name: Setup Environment Variables
+      run: node scripts/setup-env-ci.js
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+        ADMIN_APP_API_URL: ${{ vars.ADMIN_APP_API_URL }}

@@ -105,3 +105,11 @@ jobs:
 
     - name: Deploy to Vercel Production
       run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+    - name: Setup Environment Variables
+      run: node scripts/setup-env-ci.js
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+        ADMIN_APP_API_URL: ${{ vars.ADMIN_APP_API_URL }}

@@ -78,6 +78,14 @@ jobs:
     - name: Deploy to Vercel Preview
       run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
 
+    - name: Setup Environment Variables
+      run: node scripts/setup-env-ci.js
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        REACT_APP_API_URL: ${{ vars.REACT_APP_API_URL }}
+        ADMIN_APP_API_URL: ${{ vars.ADMIN_APP_API_URL }}
+
   deploy-production:
     needs: test
     runs-on: ubuntu-latest
